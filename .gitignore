@@ -1,0 +1,9 @@
+# Text Editor / IDE
+.idea
+.vscode
+
+# ENV
+.env
+
+# Build
+main
