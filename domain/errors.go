@@ -7,3 +7,12 @@ type NotFoundError struct {
 func NewNotFoundError(error string) NotFoundError {
 	return NotFoundError{Error: error}
 }
+
+
+type AlreadyExistError struct {
+	Error string
+}
+
+func NewAlreadyExistError(error string) AlreadyExistError {
+	return AlreadyExistError{Error: error}
+}

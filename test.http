@@ -1,0 +1,18 @@
+### Create category 1
+POST http://localhost:8080/api/categories
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "webinar",
+  "slug": "webinar"
+}
+
+### Create category 2
+POST http://localhost:8080/api/categories
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Minat Bakat"
+}

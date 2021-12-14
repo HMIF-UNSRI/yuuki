@@ -13,6 +13,10 @@ func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interfa
 		return
 	}
 
+	if alreadyExistError(writer, request, err) {
+		return
+	}
+
 	if validationErrors(writer, request, err) {
 		return
 	}
@@ -48,6 +52,25 @@ func notFoundError(writer http.ResponseWriter, request *http.Request, err interf
 		webResponse := domain.WebResponse{
 			Code:   http.StatusNotFound,
 			Status: http.StatusText(http.StatusNotFound),
+			Error:  exception.Error,
+		}
+
+		helper.WriteToResponseBody(writer, webResponse)
+		return true
+	} else {
+		return false
+	}
+}
+
+func alreadyExistError(writer http.ResponseWriter, request *http.Request, err interface{}) bool {
+	exception, ok := err.(domain.AlreadyExistError)
+	if ok {
+		writer.Header().Set("Content-Type", "application/json")
+		writer.WriteHeader(http.StatusConflict)
+
+		webResponse := domain.WebResponse{
+			Code:   http.StatusConflict,
+			Status: http.StatusText(http.StatusConflict),
 			Error:  exception.Error,
 		}
 

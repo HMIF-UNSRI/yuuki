@@ -1,4 +1,4 @@
-package exception
+package helper
 
 import "log"
 
