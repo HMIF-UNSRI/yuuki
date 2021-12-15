@@ -16,3 +16,22 @@ Content-Type: application/json
 {
   "name": "Minat Bakat"
 }
+
+### Update category 1
+PUT http://localhost:8080/api/categories/2
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Minat Bakat 2",
+  "slug": "minat-bakat-2"
+}
+
+### Update category 2
+PUT http://localhost:8080/api/categories/2
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Minat Bakat 3"
+}

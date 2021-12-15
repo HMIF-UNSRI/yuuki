@@ -28,8 +28,10 @@ func (repository *categoryRepository) Create(ctx context.Context, category domai
 	return category
 }
 
-func (repository *categoryRepository) Update(ctx context.Context, id int, category domain.Category) domain.Category {
-	panic("implement me")
+func (repository *categoryRepository) Update(ctx context.Context, category domain.Category) {
+	statement := "UPDATE categories SET name=?, slug=?, updated_at=CURRENT_TIMESTAMP WHERE id = ?;"
+	_, err := repository.db.ExecContext(ctx, statement, category.Name, category.Slug, category.ID)
+	helper.PanicIfErr(err)
 }
 
 func (repository *categoryRepository) Delete(ctx context.Context, id int) domain.Category {

@@ -21,6 +21,7 @@ type CategoryPayload struct {
 
 func (c CategoryPayload) FillForNewRecord() Category {
 	return Category{
+		ID:   c.ID,
 		Name: c.Name,
 		Slug: c.Slug,
 	}
@@ -36,7 +37,7 @@ func (c Category) AsPayload() CategoryPayload {
 
 type CategoryRepository interface {
 	Create(ctx context.Context, category Category) Category
-	Update(ctx context.Context, id int, category Category) Category
+	Update(ctx context.Context, category Category)
 	Delete(ctx context.Context, id int) Category
 	FindBy(ctx context.Context, statement string, args []interface{}) (Category, error)
 	FindAll(ctx context.Context, statement string) []Category
@@ -44,4 +45,5 @@ type CategoryRepository interface {
 
 type CategoryUsecase interface {
 	Create(ctx context.Context, payload CategoryPayload) CategoryPayload
+	Update(ctx context.Context, payload CategoryPayload) CategoryPayload
 }

@@ -16,3 +16,11 @@ type AlreadyExistError struct {
 func NewAlreadyExistError(error string) AlreadyExistError {
 	return AlreadyExistError{Error: error}
 }
+
+type BadRequestError struct {
+	Error string
+}
+
+func NewBadRequestError(error string) BadRequestError {
+	return BadRequestError{Error: error}
+}
