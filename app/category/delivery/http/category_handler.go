@@ -15,6 +15,7 @@ type categoryHandler struct {
 func RegisterProductHandler(router *httprouter.Router, usecase domain.CategoryUsecase) {
 	handler := &categoryHandler{categoryUsecase: usecase}
 	router.POST("/api/categories", handler.Create)
+	router.GET("/api/categories/:id", handler.GetByID)
 	router.PUT("/api/categories/:id", handler.Update)
 }
 
@@ -37,5 +38,17 @@ func (handler *categoryHandler) Update(writer http.ResponseWriter, request *http
 
 	payload.ID = id
 	payload = handler.categoryUsecase.Update(request.Context(), payload)
+	helper.WriteToResponseBody(writer, domain.NewResponse200(payload))
+}
+
+func (handler *categoryHandler) GetByID(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil {
+		panic(domain.NewBadRequestError("failed convert id from string to int"))
+	}
+
+	payload := domain.CategoryPayload{}
+	payload.ID = id
+	payload = handler.categoryUsecase.GetBy(request.Context(), payload)
 	helper.WriteToResponseBody(writer, domain.NewResponse200(payload))
 }

@@ -35,3 +35,15 @@ Content-Type: application/json
 {
   "name": "Minat Bakat 3"
 }
+
+### Get category
+GET http://localhost:8080/api/categories/1
+Accept: application/json
+
+### Get category Not Found
+GET http://localhost:8080/api/categories/999
+Accept: application/json
+
+### Get category Not ID
+GET http://localhost:8080/api/categories/hehe
+Accept: application/json

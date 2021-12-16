@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/go-playground/validator"
 	"yuuki/domain"
@@ -42,8 +41,6 @@ func (usecase *categoryUsecase) Create(ctx context.Context, payload domain.Categ
 func (usecase *categoryUsecase) Update(ctx context.Context, payload domain.CategoryPayload) domain.CategoryPayload {
 	helper.PanicIfErr(usecase.validate.Struct(&payload))
 
-	fmt.Println(payload)
-
 	// Check slug
 	if payload.Slug == "" {
 		slug := helper.ConvertNameToSlug(payload.Name)
@@ -71,4 +68,25 @@ func (usecase *categoryUsecase) Update(ctx context.Context, payload domain.Categ
 
 	usecase.categoryRepository.Update(ctx, payload.FillForNewRecord())
 	return payload
+}
+
+func (usecase *categoryUsecase) GetBy(ctx context.Context, payload domain.CategoryPayload) domain.CategoryPayload {
+	var builder sq.SelectBuilder
+	if payload.Slug != "" {
+		builder = sq.Select("id", "name", "slug").From("categories").
+			Limit(1).Where(sq.Eq{"slug": payload.Slug})
+	} else if payload.ID != 0 {
+		builder = sq.Select("id", "name", "slug").From("categories").
+			Limit(1).Where(sq.Eq{"id": payload.ID})
+	}
+
+	statement, args, err := builder.ToSql()
+	helper.PanicIfErr(err)
+
+	category, err := usecase.categoryRepository.FindBy(ctx,statement,args)
+	if err != nil {
+		panic(domain.NewNotFoundError("category is not found"))
+	}
+
+	return category.AsPayload()
 }

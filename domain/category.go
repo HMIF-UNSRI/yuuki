@@ -46,4 +46,5 @@ type CategoryRepository interface {
 type CategoryUsecase interface {
 	Create(ctx context.Context, payload CategoryPayload) CategoryPayload
 	Update(ctx context.Context, payload CategoryPayload) CategoryPayload
+	GetBy(ctx context.Context, payload CategoryPayload) CategoryPayload
 }
