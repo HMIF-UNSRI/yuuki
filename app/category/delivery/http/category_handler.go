@@ -14,6 +14,8 @@ type categoryHandler struct {
 
 func RegisterProductHandler(router *httprouter.Router, usecase domain.CategoryUsecase) {
 	handler := &categoryHandler{categoryUsecase: usecase}
+
+	router.GET("/api/categories", handler.List)
 	router.POST("/api/categories", handler.Create)
 	router.GET("/api/categories/:id", handler.GetByID)
 	router.PUT("/api/categories/:id", handler.Update)
@@ -50,5 +52,10 @@ func (handler *categoryHandler) GetByID(writer http.ResponseWriter, request *htt
 	payload := domain.CategoryPayload{}
 	payload.ID = id
 	payload = handler.categoryUsecase.GetBy(request.Context(), payload)
+	helper.WriteToResponseBody(writer, domain.NewResponse200(payload))
+}
+
+func (handler *categoryHandler) List(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	payload := handler.categoryUsecase.List(request.Context())
 	helper.WriteToResponseBody(writer, domain.NewResponse200(payload))
 }

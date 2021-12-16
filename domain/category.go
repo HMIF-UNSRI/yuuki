@@ -40,11 +40,12 @@ type CategoryRepository interface {
 	Update(ctx context.Context, category Category)
 	Delete(ctx context.Context, id int) Category
 	FindBy(ctx context.Context, statement string, args []interface{}) (Category, error)
-	FindAll(ctx context.Context, statement string) []Category
+	FindAll(ctx context.Context) []Category
 }
 
 type CategoryUsecase interface {
 	Create(ctx context.Context, payload CategoryPayload) CategoryPayload
 	Update(ctx context.Context, payload CategoryPayload) CategoryPayload
 	GetBy(ctx context.Context, payload CategoryPayload) CategoryPayload
+	List(ctx context.Context) []CategoryPayload
 }

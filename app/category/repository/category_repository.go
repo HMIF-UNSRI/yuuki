@@ -56,6 +56,18 @@ func (repository *categoryRepository) FindBy(ctx context.Context, statement stri
 	}
 }
 
-func (repository *categoryRepository) FindAll(ctx context.Context, statement string) []domain.Category {
-	panic("implement me")
+func (repository *categoryRepository) FindAll(ctx context.Context) []domain.Category {
+	statement := "SELECT id, name, slug FROM categories;"
+	rows, err := repository.db.QueryContext(ctx, statement)
+	helper.PanicIfErr(err)
+	defer rows.Close()
+
+	var categories []domain.Category
+	for rows.Next() {
+		category := domain.Category{}
+		helper.PanicIfErr(rows.Scan(&category.ID, &category.Name, &category.Slug))
+		categories = append(categories, category)
+	}
+
+	return categories
 }

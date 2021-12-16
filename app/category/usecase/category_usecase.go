@@ -83,10 +83,19 @@ func (usecase *categoryUsecase) GetBy(ctx context.Context, payload domain.Catego
 	statement, args, err := builder.ToSql()
 	helper.PanicIfErr(err)
 
-	category, err := usecase.categoryRepository.FindBy(ctx,statement,args)
+	category, err := usecase.categoryRepository.FindBy(ctx, statement, args)
 	if err != nil {
 		panic(domain.NewNotFoundError("category is not found"))
 	}
 
 	return category.AsPayload()
+}
+
+func (usecase *categoryUsecase) List(ctx context.Context) []domain.CategoryPayload {
+	categories := usecase.categoryRepository.FindAll(ctx)
+	var categoryResponses []domain.CategoryPayload
+	for _, category := range categories {
+		categoryResponses = append(categoryResponses, category.AsPayload())
+	}
+	return categoryResponses
 }

@@ -47,3 +47,7 @@ Accept: application/json
 ### Get category Not ID
 GET http://localhost:8080/api/categories/hehe
 Accept: application/json
+
+### List of Categories
+GET http://localhost:8080/api/categories
+Accept: application/json
