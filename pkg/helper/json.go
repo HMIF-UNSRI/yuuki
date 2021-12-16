@@ -2,19 +2,23 @@ package helper
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
-	"yuuki/pkg/exception"
 )
 
 func ReadFromRequestBody(request *http.Request, result interface{}) {
 	decoder := json.NewDecoder(request.Body)
 	err := decoder.Decode(result)
-	exception.PanicIfErr(err)
+	if err != nil {
+		PanicIfErr(errors.New("failed to read json request"))
+	}
 }
 
 func WriteToResponseBody(writer http.ResponseWriter, response interface{}) {
 	writer.Header().Add("Content-Type", "application/json")
 	encoder := json.NewEncoder(writer)
 	err := encoder.Encode(response)
-	exception.PanicIfErr(err)
+	if err != nil {
+		PanicIfErr(errors.New("failed to write json response"))
+	}
 }

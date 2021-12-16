@@ -1,0 +1,53 @@
+### Create category 1
+POST http://localhost:8080/api/categories
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "webinar",
+  "slug": "webinar"
+}
+
+### Create category 2
+POST http://localhost:8080/api/categories
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Minat Bakat"
+}
+
+### Update category 1
+PUT http://localhost:8080/api/categories/2
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Minat Bakat 2",
+  "slug": "minat-bakat-2"
+}
+
+### Update category 2
+PUT http://localhost:8080/api/categories/2
+Accept: application/json
+Content-Type: application/json
+
+{
+  "name": "Minat Bakat 3"
+}
+
+### Get category
+GET http://localhost:8080/api/categories/1
+Accept: application/json
+
+### Get category Not Found
+GET http://localhost:8080/api/categories/999
+Accept: application/json
+
+### Get category Not ID
+GET http://localhost:8080/api/categories/hehe
+Accept: application/json
+
+### List of Categories
+GET http://localhost:8080/api/categories
+Accept: application/json

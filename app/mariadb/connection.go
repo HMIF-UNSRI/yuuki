@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"time"
 	"yuuki/pkg/config"
-	"yuuki/pkg/exception"
+	"yuuki/pkg/helper"
 )
 
 func GetConnection(configuration config.Configuration) *sql.DB {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		configuration.Get("MYSQL_USERNAME"),
 		configuration.Get("MYSQL_PASSWORD"),
 		configuration.Get("MYSQL_HOST"),
@@ -19,12 +19,12 @@ func GetConnection(configuration config.Configuration) *sql.DB {
 	)
 
 	db, err := sql.Open("mysql", dsn)
-	exception.PanicIfErr(err)
+	helper.PanicIfErr(err)
 
 	poolMin, err := strconv.Atoi(configuration.Get("MYSQL_POOL_MIN"))
-	exception.PanicIfErr(err)
+	helper.PanicIfErr(err)
 	poolMax, err := strconv.Atoi(configuration.Get("MYSQL_POOL_MAX"))
-	exception.PanicIfErr(err)
+	helper.PanicIfErr(err)
 
 	db.SetMaxIdleConns(poolMin)
 	db.SetMaxOpenConns(poolMax)
