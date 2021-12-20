@@ -11,20 +11,18 @@ $ git clone git@github.com:HMIF-UNSRI/yuuki.git
 $ cd yuuki
 ```
 
-2. Install MySQL, then create database named `yuuki`, and create table by copy-pasting the following code.
+2. Install MySQL, then create database named `yuuki`
 
-```mysql
-CREATE TABLE IF NOT EXISTS categories
-(
-    id         INT          NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    name       VARCHAR(100) NOT NULL,
-    slug       VARCHAR(100) NOT NULL UNIQUE,
-    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+3. Run database migration using `migrate` library, read
+   documentation [here](https://github.com/golang-migrate/migrate) :
+
+```
+$ migrate -database "mysql://root:@tcp(localhost:3306)/yuuki?parseTime=true" -path migrations up
 ```
 
-3. Start server
+You can customize your database url with your own `.env` files.
+
+4. Start server
 
 ```
 $ go run main.go

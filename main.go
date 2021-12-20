@@ -6,10 +6,13 @@ import (
 	"github.com/julienschmidt/httprouter"
 	"log"
 	"net/http"
-	deliveryHttp "yuuki/app/category/delivery/http"
-	"yuuki/app/category/repository"
-	"yuuki/app/category/usecase"
+	_categoryHandler "yuuki/app/category/delivery/http"
+	_categoryRepo "yuuki/app/category/repository"
+	_categoryUsecase "yuuki/app/category/usecase"
 	"yuuki/app/mariadb"
+	_uploadHandler "yuuki/app/upload/delivery/http"
+	_uploadRepo "yuuki/app/upload/repository"
+	_uploadUsecase "yuuki/app/upload/usecase"
 	"yuuki/pkg/config"
 	"yuuki/pkg/exception"
 )
@@ -19,13 +22,17 @@ func main() {
 	database := mariadb.GetConnection(configuration)
 	validate := validator.New()
 
-	categoryRepository := repository.NewCategoryRepository(database)
-	categoryUsecase := usecase.NewCategoryUsecase(categoryRepository, validate)
+	categoryRepository := _categoryRepo.NewCategoryRepository(database)
+	categoryUsecase := _categoryUsecase.NewCategoryUsecase(categoryRepository, validate)
+
+	uploadRepository := _uploadRepo.NewUploadRepository(database)
+	uploadUsecase := _uploadUsecase.NewUploadUsecase(uploadRepository)
 
 	router := httprouter.New()
 	router.PanicHandler = exception.ErrorHandler
 
-	deliveryHttp.RegisterProductHandler(router, categoryUsecase)
+	_categoryHandler.RegisterProductHandler(router, categoryUsecase)
+	_uploadHandler.RegisterUploadHandler(router, uploadUsecase)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
