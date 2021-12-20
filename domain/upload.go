@@ -42,8 +42,10 @@ func (u Upload) AsPayload() UploadPayload {
 
 type UploadRepository interface {
 	Create(ctx context.Context, upload Upload) Upload
+	FindAll(ctx context.Context, statement string, args []interface{}) []Upload
 }
 
 type UploadUsecase interface {
 	Create(ctx context.Context, payload UploadPayload) UploadPayload
+	List(ctx context.Context, param PaginationParam) ([]UploadPayload, Pagination)
 }

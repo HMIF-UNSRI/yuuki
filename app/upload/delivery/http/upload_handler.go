@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"yuuki/domain"
 	"yuuki/pkg/helper"
 )
@@ -21,6 +22,7 @@ func RegisterUploadHandler(router *httprouter.Router, usecase domain.UploadUseca
 
 	router.ServeFiles("/api/resources/*filepath", directory)
 	router.POST("/api/uploads", handler.Upload)
+	router.GET("/api/uploads", handler.List)
 }
 
 func (handler *uploadHandler) Upload(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
@@ -67,4 +69,30 @@ func (handler *uploadHandler) Upload(writer http.ResponseWriter, request *http.R
 	// Save to database
 	payload = handler.uploadUsecase.Create(request.Context(), payload)
 	helper.WriteToResponseBody(writer, domain.NewResponse200(payload))
+}
+
+func (handler *uploadHandler) List(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	param := domain.PaginationParam{}
+
+	query := request.URL.Query().Get("limit")
+	if query != "" {
+		limit, err := strconv.Atoi(query)
+		if err != nil {
+			panic(domain.NewBadRequestError("failed convert limit from string to int"))
+		}
+		param.Limit = uint32(limit)
+	}
+
+	query = request.URL.Query().Get("cursor")
+	if query != "" {
+		cursor, err := strconv.Atoi(query)
+		if err != nil {
+			panic(domain.NewBadRequestError("failed convert cursor from string to int"))
+		}
+		param.CursorID = uint32(cursor)
+	}
+
+	uploads, pagination := handler.uploadUsecase.List(request.Context(), param)
+	helper.WriteToResponseBody(writer, domain.NewResponsePagination200(uploads, pagination))
+//	TODO: Not Tested Yet
 }
