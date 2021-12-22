@@ -68,6 +68,7 @@ func (handler *uploadHandler) Upload(writer http.ResponseWriter, request *http.R
 
 	// Save to database
 	payload = handler.uploadUsecase.Create(request.Context(), payload)
+	writer.WriteHeader(200)
 	helper.WriteToResponseBody(writer, domain.NewResponse200(payload))
 }
 
@@ -93,6 +94,7 @@ func (handler *uploadHandler) List(writer http.ResponseWriter, request *http.Req
 	}
 
 	uploads, pagination := handler.uploadUsecase.List(request.Context(), param)
+	writer.WriteHeader(200)
 	helper.WriteToResponseBody(writer, domain.NewResponsePagination200(uploads, pagination))
 //	TODO: Not Tested Yet
 }
