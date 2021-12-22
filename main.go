@@ -4,7 +4,7 @@ import (
 	"github.com/go-playground/validator"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"net/http"
 	_categoryHandler "yuuki/app/category/delivery/http"
 	_categoryRepo "yuuki/app/category/repository"
@@ -16,12 +16,8 @@ import (
 	"yuuki/middleware"
 	"yuuki/pkg/config"
 	"yuuki/pkg/exception"
+	"yuuki/pkg/helper"
 )
-
-func init() {
-	log.SetFormatter(&log.JSONFormatter{})
-	log.SetReportCaller(true)
-}
 
 func main() {
 	configuration := config.NewConfiguration(`./.env`)
@@ -34,12 +30,18 @@ func main() {
 	uploadRepository := _uploadRepo.NewUploadRepository(database)
 	uploadUsecase := _uploadUsecase.NewUploadUsecase(uploadRepository)
 
+	logger, err := zap.NewProduction()
+	helper.PanicIfErr(err)
+	defer logger.Sync()
+
+	sugar := logger.Sugar()
+
 	router := httprouter.New()
-	//logMiddleware := &middleware.LogMiddleware{Handler: router}
 	router.PanicHandler = exception.ErrorHandler
 
 	_categoryHandler.RegisterProductHandler(router, categoryUsecase)
 	_uploadHandler.RegisterUploadHandler(router, uploadUsecase)
 
-	log.Fatal(http.ListenAndServe(":8080", &middleware.LogMiddleware{Handler: router}))
+	sugar.Infow("listening and serving http on :8080")
+	sugar.Fatal(http.ListenAndServe(":8080", &middleware.LogMiddleware{Handler: router, Logger: sugar}))
 }

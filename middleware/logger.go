@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"net/http"
 	"time"
 )
@@ -34,38 +34,18 @@ func (writer *responseWriter) WriteHeader(code int) {
 
 type LogMiddleware struct {
 	Handler http.Handler
+	Logger  *zap.SugaredLogger
 }
 
-func (middleware *LogMiddleware) ServeHTTP(writer http.ResponseWriter, request *http.Request)  {
+func (middleware *LogMiddleware) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	start := time.Now()
 	wrapped := wrapResponseWriter(writer)
 
-	middleware.Handler.ServeHTTP(wrapped,request)
+	middleware.Handler.ServeHTTP(wrapped, request)
 
-	log.WithFields(log.Fields{
-		"status":   wrapped.Status(),
-		"method":   request.Method,
-		"path":     request.URL.EscapedPath(),
-		"duration": time.Since(start),
-	}).Infoln()
+	middleware.Logger.Infow("dapet",
+		"status", wrapped.Status(),
+		"method", request.Method,
+		"path", request.URL.EscapedPath(),
+		"duration", time.Since(start))
 }
-
-//func LoggingMiddleware(logger *log.Logger) func(handler http.Handler) http.Handler {
-//	return func(next http.Handler) http.Handler {
-//		fn := func(writer http.ResponseWriter, request *http.Request) {
-//			start := time.Now()
-//			wrapped := wrapResponseWriter(writer)
-//
-//			next.ServeHTTP(wrapped, request)
-//
-//			logger.WithFields(log.Fields{
-//				"status":   wrapped.Status(),
-//				"method":   request.Method,
-//				"path":     request.URL.EscapedPath(),
-//				"duration": time.Since(start),
-//			}).Infoln()
-//		}
-//
-//		return http.HandlerFunc(fn)
-//	}
-//}
