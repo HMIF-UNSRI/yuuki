@@ -51,3 +51,31 @@ Accept: application/json
 ### List of Categories
 GET http://localhost:8080/api/categories
 Accept: application/json
+
+### Create shortener 1
+POST http://localhost:8080/api/shorteners
+Accept: application/json
+Content-Type: application/json
+
+{
+  "real_url": "https://aryahmph.dev",
+  "slug": "aryahmph"
+}
+
+### Create shortener 2
+POST http://localhost:8080/api/shorteners
+Accept: application/json
+Content-Type: application/json
+
+{
+  "real_url": "not url",
+  "slug": "NotURL"
+}
+
+### Get shortener by slug
+GET http://localhost:8080/api/shorteners/aryahmph
+Accept: application/json
+
+### Get shortener by slug not found
+GET http://localhost:8080/api/shorteners/NotURL
+Accept: application/json
